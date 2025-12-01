@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<body>
+    <h3 style="width: 320px;">Gestion de consultas</h3>
+    <section id="Registro">
+        <div>
+            <button id="Dcyt_btAgregarExperto">Agregar Experto</button>
+        </div>
+    </section>
+    <section style="font-size: 10px;">
+        <h3>EXPERTOS</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 100px;">Código</th>
+                    <th style="width: 80px;">Nombre</th>
+                    <th aria-selected="undefined" style="width: 80px;">Área</th>
+                    <th style="width: 80px;">Cargo</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="Registro_divEstudiantesRegistrados"> </tbody>
+        </table>
+    </section>
+    <script type="module">
+        import Cl_index from "./dist/Cl_index.js";
+        new Cl_index()
+    </script>
+</body>
+
+</html>
