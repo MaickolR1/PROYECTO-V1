@@ -1,63 +1,62 @@
 export interface iConsulta {
-    codigoExperto:string; 
-    grupo:string;
-    pregunta:string;
+    id?: string;
+    codigoExperto: string; 
+    grupo: string;
+    pregunta: string;
+    respuesta?: string | null;
 }
 
 export default class Cl_mConsulta {
-    public _codigoExperto:string = ''; 
-    public _grupo:string = '';
-    public _pregunta:string = '';
+    private _id: string;
+    private _codigoExperto: string = ''; 
+    private _grupo: string = '';
+    private _pregunta: string = '';
+    private _respuesta: string | null = null;
 
     constructor({
+        id,
         codigoExperto,
         grupo,
-        pregunta
-    }:iConsulta) {
+        pregunta,
+        respuesta = null
+    }: iConsulta) {
+        this._id = id ? id : Date.now().toString();
         this.codigoExperto = codigoExperto;
         this.grupo = grupo;
         this.pregunta = pregunta;
-    }
-   public get codigoExperto(): string {
-        return this._codigoExperto;
-    }
-    public set codigoExperto(codigoExperto: string) {
-        this._codigoExperto = codigoExperto;
-    }
-    public get grupo(): string {
-        return this._grupo;
-    }
-    public set grupo(grupo: string) {
-        this._grupo = grupo;
-    }
-    public get pregunta(): string {
-        return this._pregunta;
-    }
-    public set pregunta(pregunta: string) {
-        this._pregunta = pregunta;
+        this._respuesta = respuesta;
     }
 
+    public get id(): string { return this._id; }
+    
+    public get codigoExperto(): string { return this._codigoExperto; }
+    public set codigoExperto(codigoExperto: string) { this._codigoExperto = codigoExperto.trim(); }
+
+    public get grupo(): string { return this._grupo; }
+    public set grupo(grupo: string) { this._grupo = grupo.trim(); }
+
+    public get pregunta(): string { return this._pregunta; }
+    public set pregunta(pregunta: string) { this._pregunta = pregunta; }
+
+    public get respuesta(): string | null { return this._respuesta; }
+    public set respuesta(respuesta: string | null) { this._respuesta = respuesta; }
+
     error(): string | false {
-        if (this._codigoExperto.length === 4) {
-            return "El código del experto no coincide con el de la base de datos";
-        }
-        const grupo = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-        if (!grupo.includes(this._grupo)) {
-            return "El grupo debe ser un número entre 1 y 10";
-        }
-        const pregunta = ["1"];
-        if (this._pregunta.length === 0) {
-            return "La pregunta no puede estar vacía";
-        }
+        if (this._codigoExperto.length !== 4) return "Seleccione un experto válido";
+        
+        if (this._grupo.length === 0) return "El código del grupo es obligatorio (Ej: T001)";
+
+        if (this._pregunta.length < 5) return "La pregunta es muy corta";
         return false;
     }
 
     toJSON(): iConsulta {
         return {
+            id: this._id,
             codigoExperto: this._codigoExperto,
             grupo: this._grupo,
-            pregunta: this._pregunta
+            pregunta: this._pregunta,
+            respuesta: this._respuesta
         };
     }
-
 }

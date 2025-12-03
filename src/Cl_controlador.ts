@@ -6,55 +6,58 @@ import Cl_mConsulta, { iConsulta } from "./Cl_mConsulta.js";
 export default class Cl_controlador {
   public modelo: Cl_mDcyt;
   public vista: Cl_vDcyt;
+
   constructor(modelo: Cl_mDcyt, vista: Cl_vDcyt) {
     this.modelo = modelo;
     this.vista = vista;
   }
-  agregarExperto({
-    expertoData,
-    callback,
-  }: {
-    expertoData: iExperto;
-    callback: Function;
-  }): void {
+
+  agregarExperto({ expertoData, callback }: { expertoData: iExperto; callback: Function }): void {
     this.modelo.agregarExperto({
       experto: new Cl_mExperto(expertoData),
-      callback: (error: string | false) => {
-        callback(error);
-      },
+      callback: (error) => callback(error),
     });
   }
-  expertosRegistrados(): iExperto[] {
-    return this.modelo.listar();
+
+  eliminarExperto({ codigo, callback }: { codigo: string; callback: Function }): void {
+      this.modelo.eliminarExperto({
+          codigo: codigo,
+          callback: (error) => callback(error)
+      });
   }
- responderPregunta({
-    
-    preguntaData,
-    callback,
-  }: {
-    preguntaData: iExperto;
-    callback: Function;
-  }): void {
-    this.modelo.agregarExperto({
-    experto: new Cl_mExperto(preguntaData),
-    callback: (error: string | false) => {
-      callback(error);
-    },
-    });
+
+  obtenerReporteRendimiento() {
+      return this.modelo.reportarRendimiento();
   }
-  enviarPregunta({
-    
-    preguntaData,
-    callback,
-  }: {
-    preguntaData: iConsulta;
-    callback: Function;
-  }): void {
+
+  obtenerListaExpertos(): iExperto[] {
+    return this.modelo.listarExpertos();
+  }
+
+  obtenerHistorialExperto(codigoExperto: string): iConsulta[] {
+      return this.modelo.listarHistorialPorExperto(codigoExperto);
+  }
+
+  enviarConsulta({ consultaData, callback }: { consultaData: iConsulta; callback: Function }): void {
     this.modelo.agregarConsulta({
-    consulta: new Cl_mConsulta(preguntaData),
-    callback: (error: string | false) => {
-      callback(error);
-    },
+      consulta: new Cl_mConsulta(consultaData),
+      callback: (error) => callback(error),
     });
+  }
+
+  obtenerConsultasPendientes(codigoExperto: string): iConsulta[] {
+      return this.modelo.listarConsultasPendientes(codigoExperto);
+  }
+
+  responderConsulta({ idConsulta, respuesta, callback }: { idConsulta: string, respuesta: string, callback: Function }): void {
+      this.modelo.responderConsulta({
+          idConsulta,
+          respuesta,
+          callback: (error) => callback(error)
+      });
+  }
+
+  activarVista({ vista }: { vista: string }): void {
+    if (this.vista) this.vista.activarVista({ vista });
   }
 }

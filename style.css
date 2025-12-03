@@ -1,0 +1,282 @@
+
+:root {
+    --primary-color: #2c3e50;
+    --secondary-color: #3498db;
+    --accent-color: #e74c3c;
+    --light-color: #ecf0f1;
+    --dark-color: #2c3e50;
+    --success-color: #2ecc71;
+    --warning-color: #f39c12;
+    --error-color: #e74c3c;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f5f6fa;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+h3, h4, h5 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+h3 {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 2rem;
+}
+
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin: 5px 0;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin: 5px 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+    font-size: 0.9em;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    background-color: var(--primary-color);
+    color: white;
+    font-weight: 600;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+#dcyt {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#dcyt > div {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+#dcyt button {
+    min-width: 200px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+}
+
+#administrador {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#administrador > div:first-child {
+    flex: 2; 
+    min-width: 300px;
+}
+
+#administrador > div:last-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+
+#administrador .formulario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+#administrador .formulario > * {
+    flex: 1 1 200px;
+    min-width: 200px;
+}
+
+#administrador_btReporte {
+    background-color: var(--success-color);
+    margin-top: auto;
+    padding: 15px;
+    font-size: 16px;
+    align-self: stretch;
+}
+
+#experto {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#experto > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+#experto_slExperto {
+    flex: 1;
+    min-width: 200px;
+}
+
+#experto_divResponder {
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    padding: 20px;
+    margin-top: 15px;
+    border-left: 4px solid var(--success-color);
+}
+
+#experto_btEnviarRespuesta {
+    background-color: var(--success-color);
+    margin-right: 10px;
+}
+
+#experto_btCancelar {
+    background-color: #95a5a6;
+}
+
+#consulta {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#consulta > div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#consulta_btnEnviar {
+    background-color: var(--secondary-color);
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+.oculto {
+    display: none; 
+}
+
+input:focus, 
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+input:hover,
+select:hover,
+textarea:hover {
+    border-color: #999;
+}
+
+@media (max-width: 900px) {
+    #administrador {
+        flex-direction: column;
+    }
+    
+    #administrador > div:first-child,
+    #administrador > div:last-child {
+        flex: auto;
+        width: 100%;
+    }
+    
+    #dcyt > div {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #dcyt button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    section {
+        padding: 15px;
+    }
+    
+    th, td {
+        padding: 10px;
+        font-size: 0.85em;
+    }
+}

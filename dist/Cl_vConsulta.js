@@ -1,41 +1,67 @@
 import Cl_vGeneral from "./tools/Cl_vGeneral.js";
 export default class Cl_vConsulta extends Cl_vGeneral {
     constructor() {
-        super({ formName: "Consulta" });
-        this.inCodigoExperto = this.crearHTMLInputElement("inCodigoExperto", {
-            oninput: () => {
-                this.inPregunta.value = this.inCodigoExperto.value
-                    .toUpperCase()
-                    .trim();
-                this.refresh();
-            },
+        super({ formName: "consulta" });
+        this.slExperto = this.crearHTMLSelectElement("slExperto", {
+            onchange: () => this.cargarHistorial()
         });
-        this.inPregunta = this.crearHTMLInputElement("inPregunta", {
-            oninput: () => {
-                this.inCodigoExperto.value = this.inPregunta.value
-                    .toUpperCase()
-                    .trim();
-                this.refresh();
-            },
-        });
+        this.inGrupo = this.crearHTMLInputElement("inGrupo");
+        this.inPregunta = this.crearHTMLInputElement("inPregunta");
+        this.divHistorial = this.crearHTMLElement("divHistorial");
         this.btnEnviar = this.crearHTMLButtonElement("btnEnviar", {
             onclick: () => this.enviar()
         });
     }
+    cargarExpertos() {
+        let expertos = this.controlador.obtenerListaExpertos();
+        this.slExperto.innerHTML = "<option value=''>Seleccione un experto...</option>";
+        expertos.forEach((exp) => {
+            let op = document.createElement("option");
+            op.value = exp.codigo;
+            op.text = `${exp.nombre} (${exp.area})`;
+            this.slExperto.add(op);
+        });
+        this.divHistorial.innerHTML = "";
+    }
+    cargarHistorial() {
+        let codigo = this.slExperto.value;
+        this.divHistorial.innerHTML = "";
+        if (!codigo)
+            return;
+        let historial = this.controlador.obtenerHistorialExperto(codigo);
+        if (historial.length === 0) {
+            this.divHistorial.innerHTML = "<tr><td colspan='3'>Este experto aún no tiene consultas.</td></tr>";
+            return;
+        }
+        historial.forEach((c) => {
+            let respuestaTexto = c.respuesta
+                ? `<span style="color: green; font-weight: bold;">${c.respuesta}</span>`
+                : `<span style="color: gray; font-style: italic;">(Esperando respuesta...)</span>`;
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${c.grupo}</td>
+                <td>${c.pregunta}</td>
+                <td>${respuestaTexto}</td>
+            `;
+            this.divHistorial.appendChild(tr);
+        });
+    }
     enviar() {
         var _a;
-        let pregunta = prompt("Ingrese la pregunta:");
-        if (!pregunta)
-            return;
-        (_a = this.controlador) === null || _a === void 0 ? void 0 : _a.enviarPregunta({
-            preguntaData: {
-                codigoExperto: this.inCodigoExperto.value,
-                grupo: this.inPregunta.value,
-                pregunta,
+        (_a = this.controlador) === null || _a === void 0 ? void 0 : _a.enviarConsulta({
+            consultaData: {
+                codigoExperto: this.slExperto.value,
+                grupo: this.inGrupo.value,
+                pregunta: this.inPregunta.value,
             },
             callback: (error) => {
                 if (error)
                     alert(error);
+                else {
+                    alert("Consulta enviada al experto.");
+                    this.inPregunta.value = "";
+                    this.cargarHistorial();
+                }
             }
         });
     }

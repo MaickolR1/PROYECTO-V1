@@ -1,32 +1,113 @@
 <!DOCTYPE html>
 <html lang="es">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Consultas - DCYT</title>
+    <link rel="stylesheet" href="./style.css"> 
+</head>
 <body>
-    <h3 style="width: 320px;">Gestion de consultas</h3>
-    <section id="Registro">
-        <div>
-            <button id="Dcyt_btAgregarExperto">Agregar Experto</button>
+    <h3>SISTEMA DE GESTIÓN DCYT</h3>
+
+    <section id="dcyt">
+        <h4>Menú Principal</h4>
+        <div style="display: flex; gap: 10px;">
+            <button id="dcyt_btAdministrador">Administrador</button>
+            <button id="dcyt_btExperto">Módulo Experto (Responder)</button>
+            <button id="dcyt_btConsulta">Módulo Grupo (Consultar)</button>
         </div>
     </section>
-    <section style="font-size: 10px;">
-        <h3>EXPERTOS</h3>
+
+    <section id="administrador" class="oculto">
+        <h4>Panel Administrador: Gestión de Expertos</h4>
+        <div class="formulario">
+            <label>Código: <input type="text" id="administrador_inCodigo" placeholder="Ej: E001"></label>
+            <label>Nombre: <input type="text" id="administrador_inNombre"></label>
+            <label>Área: 
+                <select id="administrador_slArea" style="width: 100%; margin-bottom: 5px;">
+                    <option value="">Seleccione...</option>
+                    <option value="Software">Software</option>
+                    <option value="Hardware">Hardware</option>
+                    <option value="Redes">Redes</option>
+                    <option value="IA">Inteligencia Artificial</option>
+                </select>
+            </label>
+            <label>Cargo: <input type="text" id="administrador_inCargo"></label>
+            
+            <button id="administrador_btnAgregarExperto">Guardar Experto</button>
+            <button id="administrador_btnEliminarExperto" style="background-color: #e74c3c;">Eliminar Experto (por Código)</button>
+        </div>
+        
+        <hr>
+        <h4>Reporte de Rendimiento</h4>
+        <button id="administrador_btReporte">Generar Reporte de Consultas</button>
+        <div id="administrador_divReporte"></div>
+    </section>
+
+    <section id="experto" class="oculto">
+        <h4>Panel del Experto</h4>
+        <label>Soy el Experto: 
+            <select id="experto_slExperto" style="width: 100%;">
+                <option value="">Seleccione su nombre...</option>
+            </select>
+        </label>
+        
+        <hr>
+        
+        <h5>Mis Consultas Pendientes</h5>
         <table>
             <thead>
                 <tr>
-                    <th style="width: 100px;">Código</th>
-                    <th style="width: 80px;">Nombre</th>
-                    <th aria-selected="undefined" style="width: 80px;">Área</th>
-                    <th style="width: 80px;">Cargo</th>
-                    
+                    <th>Grupo</th>
+                    <th>Pregunta</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
-            <tbody id="Registro_divEstudiantesRegistrados"> </tbody>
+            <tbody id="experto_divConsultas"> 
+                </tbody>
+        </table>
+
+        <div id="experto_divResponder" style="display: none; margin-top: 15px; border: 1px solid green; padding: 10px;">
+            <h5>Respondiendo a Grupo: <span id="experto_lblGrupo"></span></h5>
+            <p>Pregunta: <i id="experto_lblPregunta"></i></p>
+            <label>Respuesta: <input type="text" id="experto_inRespuesta" style="width: 100%;"></label>
+            <button id="experto_btEnviarRespuesta">Enviar Respuesta</button>
+            <button id="experto_btCancelar" style="background-color: #ccc; color: black;">Cancelar</button>
+        </div>
+    </section>
+
+    <section id="consulta" class="oculto">
+        <h4>Realizar Consulta / Ver Respuestas</h4>
+        <div>
+            <label>Seleccione Experto: 
+                <select id="consulta_slExperto" style="width: 100%;">
+                    </select>
+            </label>
+            
+            <label>Su Grupo (Ej: T001): <input type="text" id="consulta_inGrupo"></label>
+            
+            <label>Pregunta: <input type="text" id="consulta_inPregunta" placeholder="Escriba su duda..."></label>
+            <button id="consulta_btnEnviar">Enviar Consulta</button>
+        </div>
+
+        <hr>
+        <h5>Historial de Preguntas y Respuestas del Experto</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 15%;">Grupo</th>
+                    <th style="width: 40%;">Pregunta</th>
+                    <th style="width: 45%;">Respuesta</th>
+                </tr>
+            </thead>
+            <tbody id="consulta_divHistorial">
+                </tbody>
         </table>
     </section>
+
     <script type="module">
         import Cl_index from "./dist/Cl_index.js";
-        new Cl_index()
+        new Cl_index();
     </script>
 </body>
-
 </html>

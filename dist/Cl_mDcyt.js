@@ -1,86 +1,114 @@
-import Cl_dcytDb from "https://gtplus.net/forms2/dcytDb/api/Cl_dcytDb.php?v251110-2150";
 import Cl_mExperto from "./Cl_mExperto.js";
 import Cl_mConsulta from "./Cl_mConsulta.js";
 export default class Cl_mDcyt {
     constructor() {
-        this.Dcyt = [];
-        this.Consulta = [];
-        this.tbDcyt = "Gestion de consultas a expertos";
-        this.db = new Cl_dcytDb({ aliasCuenta: "CODEBREAKERS" });
+        this.Expertos = [];
+        this.Consultas = [];
+        this.KEY_EXPERTOS = "ProyV1_Expertos_Local";
+        this.KEY_CONSULTAS = "ProyV1_Consultas_Local";
     }
-    agregarExperto({ experto, callback, }) {
-        let error = experto.error();
-        if (error) {
-            callback(error);
+    agregarExperto({ experto, callback }) {
+        if (experto.error()) {
+            callback(experto.error());
             return;
         }
-        let existe = this.Dcyt.find((e) => e.codigo === experto.codigo);
+        if (this.Expertos.find((e) => e.codigo === experto.codigo)) {
+            callback("El código de experto ya existe.");
+            return;
+        }
+        this.Expertos.push(experto);
+        this.guardarExpertos();
+        callback(false);
+    }
+    // --- MODIFICADO: ELIMINACIÓN EN CASCADA ---
+    eliminarExperto({ codigo, callback }) {
+        let indice = this.Expertos.findIndex((e) => e.codigo === codigo);
+        if (indice === -1) {
+            callback(`No existe ningún experto con el código ${codigo}.`);
+            return;
+        }
+        // 1. Eliminamos TODAS las consultas asociadas a este experto
+        // Filtramos el array para quedarnos solo con las consultas que NO son de este experto
+        this.Consultas = this.Consultas.filter(c => c.codigoExperto !== codigo);
+        // 2. Eliminamos al experto
+        this.Expertos.splice(indice, 1);
+        // 3. Guardamos los cambios en AMBAS listas (Expertos y Consultas)
+        this.guardarExpertos();
+        this.guardarConsultas();
+        callback(false); // Éxito
+    }
+    agregarConsulta({ consulta, callback }) {
+        if (consulta.error()) {
+            callback(consulta.error());
+            return;
+        }
+        let existe = this.Consultas.find((c) => c.codigoExperto === consulta.codigoExperto && c.grupo === consulta.grupo);
         if (existe) {
-            callback("El experto ya se encuentra registrado");
+            callback(`El Grupo ${consulta.grupo} ya le hizo una pregunta a este experto.`);
             return;
         }
-        this.db.addRecord({
-            tabla: this.tbDcyt,
-            object: experto.toJSON(),
-            callback: ({ id, objects, error }) => {
-                if (error)
-                    this.llenarExperto(objects);
-                callback === null || callback === void 0 ? void 0 : callback(error);
-            },
-        });
+        this.Consultas.push(consulta);
+        this.guardarConsultas();
+        callback(false);
     }
-    cargarExpertos(callback) {
-        // Obtener los contactos desde la Web Storage
-        this.db.listRecords({
-            tabla: this.tbDcyt,
-            callback: ({ objects, error }) => {
-                if (!error)
-                    this.llenarExperto(objects || []);
-                callback(false);
-            },
-        });
-    }
-    llenarExperto(Dcyt) {
-        this.Dcyt = [];
-        Dcyt.map((experto) => this.Dcyt.push(new Cl_mExperto(experto)));
-    }
-    listar() {
-        return this.Dcyt.map((experto) => experto.toJSON());
-    }
-    agregarConsulta({ consulta, callback, }) {
-        let error = consulta.error();
-        if (error) {
-            callback(error);
+    responderConsulta({ idConsulta, respuesta, callback }) {
+        let consulta = this.Consultas.find(c => c.id === idConsulta);
+        if (!consulta) {
+            callback("Consulta no encontrada");
             return;
         }
-        let existe = this.Consulta.find((e) => e.codigoExperto === consulta.codigoExperto);
-        if (existe) {
-            callback("La consulta ya se encuentra registrada");
-            return;
+        consulta.respuesta = respuesta;
+        this.guardarConsultas();
+        callback(false);
+    }
+    listarExpertos() {
+        return this.Expertos.map(e => e.toJSON());
+    }
+    listarConsultasPendientes(codigoExperto) {
+        return this.Consultas
+            .filter(c => c.codigoExperto === codigoExperto && (c.respuesta === null || c.respuesta === ""))
+            .map(c => c.toJSON());
+    }
+    reportarRendimiento() {
+        let reporte = [];
+        this.Expertos.forEach(exp => {
+            let total = this.Consultas.filter(c => c.codigoExperto === exp.codigo).length;
+            reporte.push({
+                nombre: exp.nombre,
+                total: total
+            });
+        });
+        return reporte;
+    }
+    listarHistorialPorExperto(codigoExperto) {
+        return this.Consultas
+            .filter(c => c.codigoExperto === codigoExperto)
+            .map(c => c.toJSON());
+    }
+    cargarDatosIniciales(callback) {
+        try {
+            let expData = localStorage.getItem(this.KEY_EXPERTOS);
+            if (expData) {
+                let objects = JSON.parse(expData);
+                this.Expertos = objects.map(e => new Cl_mExperto(e));
+            }
+            let consData = localStorage.getItem(this.KEY_CONSULTAS);
+            if (consData) {
+                let objects = JSON.parse(consData);
+                this.Consultas = objects.map(c => new Cl_mConsulta(c));
+            }
+            callback(false);
         }
-        this.db.addRecord({
-            tabla: this.tbDcyt,
-            object: consulta.toJSON(),
-            callback: ({ id, objects, error }) => {
-                if (error)
-                    this.llenarConsulta(objects);
-                callback === null || callback === void 0 ? void 0 : callback(error);
-            },
-        });
+        catch (error) {
+            callback("Error al leer LocalStorage: " + error);
+        }
     }
-    cargarConsultas(callback) {
-        // Obtener los contactos desde la Web Storage
-        this.db.listRecords({
-            tabla: this.tbDcyt,
-            callback: ({ objects, error }) => {
-                if (!error)
-                    this.llenarConsulta(objects || []);
-                callback(false);
-            },
-        });
+    guardarExpertos() {
+        let data = this.Expertos.map(e => e.toJSON());
+        localStorage.setItem(this.KEY_EXPERTOS, JSON.stringify(data));
     }
-    llenarConsulta(Dcyt) {
-        this.Consulta = [];
-        Dcyt.map((consulta) => this.Consulta.push(new Cl_mConsulta(consulta)));
+    guardarConsultas() {
+        let data = this.Consultas.map(c => c.toJSON());
+        localStorage.setItem(this.KEY_CONSULTAS, JSON.stringify(data));
     }
 }

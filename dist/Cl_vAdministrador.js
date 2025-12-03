@@ -1,77 +1,84 @@
 import Cl_vGeneral from "./tools/Cl_vGeneral.js";
 export default class Cl_vAdministrador extends Cl_vGeneral {
     constructor() {
-        super({ formName: "dcyt" });
+        super({ formName: "administrador" });
         this.btAgregarExperto = this.crearHTMLButtonElement("btnAgregarExperto", {
             onclick: () => this.agregarExperto(),
         });
-        this.inArea = this.crearHTMLInputElement("inArea", {
-            oninput: () => this.agregarExperto(),
+        // NUEVO BOTÓN
+        this.btEliminarExperto = this.crearHTMLButtonElement("btnEliminarExperto", {
+            onclick: () => this.eliminarExperto(),
         });
-        this.inCargo = this.crearHTMLInputElement("inCargo", {
-            oninput: () => this.agregarExperto(),
+        this.btReporte = this.crearHTMLButtonElement("btReporte", {
+            onclick: () => this.generarReporte()
         });
-        this.inRespuesta = this.crearHTMLInputElement("inRespuesta", {
-            oninput: () => this.responderPregunta(),
+        this.inArea = this.crearHTMLSelectElement("slArea", {
+            elementsSource: [
+                { value: "", text: "Seleccione..." },
+                { value: "Software", text: "Software" },
+                { value: "Hardware", text: "Hardware" },
+                { value: "Redes", text: "Redes" },
+                { value: "IA", text: "Inteligencia Artificial" }
+            ],
+            valueAttributeName: "value",
+            textExpresion: (opcion) => opcion.text
         });
-        this.inCodigo = this.crearHTMLInputElement("inCodigo", {
-            oninput: () => this.agregarExperto(),
-        });
-        this.inNombre = this.crearHTMLInputElement("inNombre", {
-            oninput: () => this.agregarExperto(),
-        });
+        this.inCargo = this.crearHTMLInputElement("inCargo");
+        this.inCodigo = this.crearHTMLInputElement("inCodigo");
+        this.inNombre = this.crearHTMLInputElement("inNombre");
+        this.divReporte = this.crearHTMLElement("divReporte");
     }
     agregarExperto() {
-        let codigo = prompt("Ingrese el codigo del experto");
-        if (!codigo)
-            return;
-        let nombre = prompt("Ingrese el nombre del experto");
-        if (!nombre)
-            return;
-        let area = prompt("Ingrese el area del experto");
-        if (!area)
-            return;
-        let cargo = prompt("Ingrese el cargo del experto");
-        if (!cargo)
-            return;
-        let respuesta = prompt("Ingrese la respuesta del experto");
-        if (!respuesta)
-            return;
         this.controlador.agregarExperto({
             expertoData: {
-                codigo: codigo,
-                nombre: nombre,
-                area: area,
-                cargo: cargo,
-                respuesta: respuesta,
+                codigo: this.inCodigo.value,
+                nombre: this.inNombre.value,
+                area: this.inArea.value,
+                cargo: this.inCargo.value
             },
             callback: (error) => {
                 if (error)
                     alert(error);
-                this.refresh();
+                else {
+                    alert("Experto agregado con éxito");
+                    this.limpiarFormulario();
+                }
             },
         });
     }
-    responderPregunta() {
-        let nombre = prompt("Ingrese el nombre del experto");
-        if (!nombre)
+    eliminarExperto() {
+        let codigo = this.inCodigo.value.trim();
+        if (codigo === "") {
+            alert("Por favor, escriba el CÓDIGO del experto que desea eliminar.");
             return;
-        let respuesta = prompt("Ingrese la respuesta del experto");
-        if (!respuesta)
-            return;
-        this.controlador.responderPregunta({
-            preguntaData: {
-                codigo: "",
-                nombre: nombre,
-                area: "",
-                cargo: "",
-                respuesta: respuesta,
-            },
-            callback: (error) => {
-                if (error)
-                    alert(error);
-                this.refresh();
-            },
+        }
+        if (confirm(`¿Está seguro de eliminar al experto con código ${codigo}?`)) {
+            this.controlador.eliminarExperto({
+                codigo: codigo,
+                callback: (error) => {
+                    if (error)
+                        alert(error);
+                    else {
+                        alert("Experto eliminado correctamente.");
+                        this.limpiarFormulario();
+                    }
+                }
+            });
+        }
+    }
+    generarReporte() {
+        let datos = this.controlador.obtenerReporteRendimiento();
+        let html = "<table border=1><tr><th>Experto</th><th>Total Consultas</th></tr>";
+        datos.forEach(d => {
+            html += `<tr><td>${d.nombre}</td><td>${d.total}</td></tr>`;
         });
+        html += "</table>";
+        this.divReporte.innerHTML = html;
+    }
+    limpiarFormulario() {
+        this.inCodigo.value = "";
+        this.inNombre.value = "";
+        this.inArea.value = "";
+        this.inCargo.value = "";
     }
 }

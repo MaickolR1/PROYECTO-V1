@@ -1,73 +1,108 @@
-import Cl_mExperto, {iExperto} from "./Cl_mExperto.js";
+import Cl_mConsulta, { iConsulta } from "./Cl_mConsulta.js";
+import { iExperto } from "./Cl_mExperto.js";
 import Cl_vGeneral, { tHTMLElement } from "./tools/Cl_vGeneral.js";
 
 export default class Cl_vExperto extends Cl_vGeneral {
-    private inNombre: HTMLInputElement;
-    private inPregunta: HTMLInputElement;
-    private btResponder: HTMLButtonElement;
-    private divExperto: HTMLElement;
+    private slExperto: HTMLSelectElement;
+    private divConsultas: HTMLElement;
+    private divResponder: HTMLElement;
+    private lblGrupo: HTMLElement;
+    private lblPregunta: HTMLElement;
+    private inRespuesta: HTMLInputElement;
+    private btEnviarRespuesta: HTMLButtonElement;
+    private btCancelar: HTMLButtonElement;
+
+    private idConsultaActual: string = "";
 
     constructor(){
-        super({ formName: "Experto" });
-        this.inNombre = this.crearHTMLInputElement("inNombre",{
-            oninput: () => {
-                this.inNombre.value = this.inNombre.value
-                .toUpperCase()
-                .trim();
-                this.refresh();
-            },
+        super({ formName: "experto" }); 
+        
+        this.slExperto = this.crearHTMLSelectElement("slExperto", {
+            onchange: () => this.cargarPendientes()
         });
-        this.inPregunta = this.crearHTMLInputElement("inpregunta",{
-            oninput: () => {
-                this.inPregunta.value = this.inPregunta.value
-                .toUpperCase()
-                .trim();
-                this.refresh();
-            },
-        });
-        this.btResponder = this.crearHTMLButtonElement("btResponder",{
-            onclick: () => this.responder(),
-        });
-        this.divExperto = this.crearHTMLElement("divExperto",{
-            type: tHTMLElement.CONTAINER,
-            onclick: () => this.expertosRegistrados(),    
-        }) as HTMLElement;
 
+        this.divConsultas = this.crearHTMLElement("divConsultas"); // TBODY
+
+        this.divResponder = this.crearHTMLElement("divResponder");
+        this.lblGrupo = document.getElementById("experto_lblGrupo") as HTMLElement;
+        this.lblPregunta = document.getElementById("experto_lblPregunta") as HTMLElement;
+        this.inRespuesta = this.crearHTMLInputElement("inRespuesta");
+        
+        this.btEnviarRespuesta = this.crearHTMLButtonElement("btEnviarRespuesta", {
+            onclick: () => this.enviarRespuesta()
+        });
+        
+        this.btCancelar = this.crearHTMLButtonElement("btCancelar", {
+            onclick: () => { this.divResponder.style.display = "none"; }
+        });
     }
 
-    public responder(){
-        let respuesta = prompt("Ingrese la respuesta");
-        if(!respuesta) return;
-        this.controlador?.responderPregunta({
-            preguntaData: {
-                codigo: this.inNombre.value,
-                nombre: this.inPregunta.value,
-                area: this.inPregunta.value,
-                cargo: this.inPregunta.value,
-                respuesta: this.inPregunta.value,
-            },
-            callback: (error: string | false) => {
-                if(error) alert(error);
+    public inicializar() {
+        let expertos = this.controlador!.obtenerListaExpertos();
+        this.slExperto.innerHTML = "<option value=''>Seleccione su nombre...</option>";
+        expertos.forEach((exp: iExperto) => {
+            let op = document.createElement("option");
+            op.value = exp.codigo;
+            op.text = exp.nombre;
+            this.slExperto.add(op);
+        });
+        this.divConsultas.innerHTML = "";
+        this.divResponder.style.display = "none";
+    }
+
+    cargarPendientes() {
+        let codigo = this.slExperto.value;
+        if (!codigo) return;
+
+        let pendientes = this.controlador!.obtenerConsultasPendientes(codigo);
+        this.divConsultas.innerHTML = "";
+
+        if (pendientes.length === 0) {
+            this.divConsultas.innerHTML = "<tr><td colspan='3'>No hay consultas pendientes</td></tr>";
+            return;
+        }
+
+        pendientes.forEach((c: iConsulta) => {
+            let btnId = `btn_resp_${c.id}`;
+            let tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>Grupo ${c.grupo}</td>
+                <td>${c.pregunta}</td>
+                <td><button id="${btnId}">Responder</button></td>
+            `;
+            this.divConsultas.appendChild(tr);
+
+            let btn = document.getElementById(btnId);
+            if(btn) {
+                btn.onclick = () => this.prepararRespuesta(c);
             }
         });
     }
 
-    public expertosRegistrados(){
-        this.divExperto.innerHTML = "";
-    let registro = this.controlador?.expertosRegistrados();
-    if (!registro) return;
-    registro.forEach((experto: iExperto) => {
-      this.divExperto.innerHTML += `<tr>
-      <td>${experto.codigo}</td>
-      <td>${experto.nombre}</td>
-      <td>${experto.area}</td>
-      <td>${experto.cargo}</td>
-      <td>${experto.respuesta}</td>
-      </tr>`;
-    
-    });
-  
- }
+    prepararRespuesta(consulta: iConsulta) {
+        this.idConsultaActual = consulta.id!;
+        this.lblGrupo.innerText = consulta.grupo;
+        this.lblPregunta.innerText = consulta.pregunta;
+        this.inRespuesta.value = "";
+        this.divResponder.style.display = "block";
+    }
 
+    enviarRespuesta() {
+        if (this.inRespuesta.value === "") { alert("Escriba una respuesta"); return; }
+        
+        this.controlador!.responderConsulta({
+            idConsulta: this.idConsultaActual,
+            respuesta: this.inRespuesta.value,
+            callback: (error: string | false) => {
+                if(!error) {
+                    alert("Respuesta enviada");
+                    this.divResponder.style.display = "none";
+                    this.cargarPendientes();
+                } else {
+                    alert(error);
+                }
+            }
+        })
+    }
 }
 

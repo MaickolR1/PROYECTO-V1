@@ -5,31 +5,45 @@ export default class Cl_controlador {
         this.modelo = modelo;
         this.vista = vista;
     }
-    agregarExperto({ expertoData, callback, }) {
+    agregarExperto({ expertoData, callback }) {
         this.modelo.agregarExperto({
             experto: new Cl_mExperto(expertoData),
-            callback: (error) => {
-                callback(error);
-            },
+            callback: (error) => callback(error),
         });
     }
-    expertosRegistrados() {
-        return this.modelo.listar();
-    }
-    responderPregunta({ preguntaData, callback, }) {
-        this.modelo.agregarExperto({
-            experto: new Cl_mExperto(preguntaData),
-            callback: (error) => {
-                callback(error);
-            },
+    eliminarExperto({ codigo, callback }) {
+        this.modelo.eliminarExperto({
+            codigo: codigo,
+            callback: (error) => callback(error)
         });
     }
-    enviarPregunta({ preguntaData, callback, }) {
+    obtenerReporteRendimiento() {
+        return this.modelo.reportarRendimiento();
+    }
+    obtenerListaExpertos() {
+        return this.modelo.listarExpertos();
+    }
+    obtenerHistorialExperto(codigoExperto) {
+        return this.modelo.listarHistorialPorExperto(codigoExperto);
+    }
+    enviarConsulta({ consultaData, callback }) {
         this.modelo.agregarConsulta({
-            consulta: new Cl_mConsulta(preguntaData),
-            callback: (error) => {
-                callback(error);
-            },
+            consulta: new Cl_mConsulta(consultaData),
+            callback: (error) => callback(error),
         });
+    }
+    obtenerConsultasPendientes(codigoExperto) {
+        return this.modelo.listarConsultasPendientes(codigoExperto);
+    }
+    responderConsulta({ idConsulta, respuesta, callback }) {
+        this.modelo.responderConsulta({
+            idConsulta,
+            respuesta,
+            callback: (error) => callback(error)
+        });
+    }
+    activarVista({ vista }) {
+        if (this.vista)
+            this.vista.activarVista({ vista });
     }
 }

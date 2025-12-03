@@ -6,31 +6,32 @@ export default class Cl_vDcyt extends Cl_vGeneral {
     constructor() {
         super({ formName: "dcyt" });
         this.vExperto = new Cl_vExperto();
-        this.vExperto.show({ ver: false });
         this.vConsulta = new Cl_vConsulta();
-        this.vConsulta.show({ ver: false });
         this.vAdministrador = new Cl_vAdministrador();
+        // Inicializar ocultos
+        this.vExperto.show({ ver: false });
+        this.vConsulta.show({ ver: false });
         this.vAdministrador.show({ ver: false });
-        this.btAdministrador = this.crearHTMLElement("btAdministrador", {
-            onclick: () => 0,
-        });
-        this.btExperto = this.crearHTMLElement("btExperto", {
-            onclick: () => 0,
-        });
-        this.btConsulta = this.crearHTMLElement("btConsulta", {
-            onclick: () => 0,
-        });
-        this.lblExperto = this.crearHTMLElement("lblExperto", {
-            refresh: () => { }
-        });
-        this.lblConsulta = this.crearHTMLElement("lblConsulta", {
-            refresh: () => { }
-        });
-        this.lblAdministrador = this.crearHTMLElement("lblAdministrador", {
-            refresh: () => { }
-        });
+        this.btAdministrador = this.crearHTMLElement("btAdministrador");
+        this.btExperto = this.crearHTMLElement("btExperto");
+        this.btConsulta = this.crearHTMLElement("btConsulta");
+        this.btAdministrador.onclick = () => this.irA("administrador");
+        this.btExperto.onclick = () => {
+            this.irA("experto");
+            this.vExperto.inicializar();
+        };
+        this.btConsulta.onclick = () => {
+            this.irA("consulta");
+            this.vConsulta.cargarExpertos();
+        };
+    }
+    irA(vista) {
+        if (this.controlador) {
+            this.controlador.activarVista({ vista });
+        }
     }
     set controlador(controlador) {
+        super.controlador = controlador;
         this.vExperto.controlador = controlador;
         this.vConsulta.controlador = controlador;
         this.vAdministrador.controlador = controlador;
@@ -38,7 +39,7 @@ export default class Cl_vDcyt extends Cl_vGeneral {
     get controlador() {
         return super.controlador;
     }
-    activarVista({ vista, opcion = "", objecto = "", }) {
+    activarVista({ vista }) {
         this.vExperto.show({ ver: false });
         this.vConsulta.show({ ver: false });
         this.vAdministrador.show({ ver: false });
