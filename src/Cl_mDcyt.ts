@@ -1,13 +1,15 @@
+import Cl_dcytDb from "https://gtplus.net/forms2/dcytDb/api/Cl_dcytDb.php?v251110-2150";
 import Cl_mExperto, { iExperto } from "./Cl_mExperto.js";
 import Cl_mConsulta, { iConsulta } from "./Cl_mConsulta.js";
 
 export default class Cl_mDcyt {
     private Expertos: Cl_mExperto[] = [];
     private Consultas: Cl_mConsulta[] = [];
-    private readonly KEY_EXPERTOS = "ProyV1_Expertos_Local"; 
-    private readonly KEY_CONSULTAS = "ProyV1_Consultas_Local"; 
+    private db: Cl_dcytDb;
+  readonly tbRegistro: string = "Mi.Registro.v01";
 
     constructor() {
+        this.db = new Cl_dcytDb({ aliasCuenta: "CODEBREAKERS" });
     }
 
     agregarExperto({ experto, callback }: { experto: Cl_mExperto; callback: (error: string | false) => void; }): void {
@@ -100,33 +102,13 @@ export default class Cl_mDcyt {
             .map(c => c.toJSON());
     }
 
-    cargarDatosIniciales(callback: (error: string | false) => void): void {
-        try {
-            let expData = localStorage.getItem(this.KEY_EXPERTOS);
-            if (expData) {
-                let objects: iExperto[] = JSON.parse(expData);
-                this.Expertos = objects.map(e => new Cl_mExperto(e));
-            }
-
-            let consData = localStorage.getItem(this.KEY_CONSULTAS);
-            if (consData) {
-                let objects: iConsulta[] = JSON.parse(consData);
-                this.Consultas = objects.map(c => new Cl_mConsulta(c));
-            }
-
-            callback(false);
-        } catch (error) {
-            callback("Error al leer LocalStorage: " + error);
-        }
-    }
+    
 
     private guardarExpertos() {
-        let data = this.Expertos.map(e => e.toJSON());
-        localStorage.setItem(this.KEY_EXPERTOS, JSON.stringify(data));
+        let db = this.Expertos.map(e => e.toJSON());
     }
 
     private guardarConsultas() {
-        let data = this.Consultas.map(c => c.toJSON());
-        localStorage.setItem(this.KEY_CONSULTAS, JSON.stringify(data));
+        let db = this.Consultas.map(c => c.toJSON());
     }
 }
