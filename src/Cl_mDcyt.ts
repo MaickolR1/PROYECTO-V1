@@ -102,7 +102,9 @@ export default class Cl_mDcyt {
             .map(c => c.toJSON());
     }
 
-    
+    cargarDatosIniciales(callback: (error: string | false) => void): void {
+        this.db.listRecords({ tabla: this.tbRegistro, callback });
+    }
 
     private guardarExpertos() {
         let db = this.Expertos.map(e => e.toJSON());

@@ -1,11 +1,10 @@
-import Cl_mExperto from "./Cl_mExperto.js";
-import Cl_mConsulta from "./Cl_mConsulta.js";
+import Cl_dcytDb from "https://gtplus.net/forms2/dcytDb/api/Cl_dcytDb.php?v251110-2150";
 export default class Cl_mDcyt {
     constructor() {
         this.Expertos = [];
         this.Consultas = [];
-        this.KEY_EXPERTOS = "ProyV1_Expertos_Local";
-        this.KEY_CONSULTAS = "ProyV1_Consultas_Local";
+        this.tbRegistro = "Mi.Registro.v01";
+        this.db = new Cl_dcytDb({ aliasCuenta: "CODEBREAKERS" });
     }
     agregarExperto({ experto, callback }) {
         if (experto.error()) {
@@ -20,22 +19,17 @@ export default class Cl_mDcyt {
         this.guardarExpertos();
         callback(false);
     }
-    // --- MODIFICADO: ELIMINACIÓN EN CASCADA ---
     eliminarExperto({ codigo, callback }) {
         let indice = this.Expertos.findIndex((e) => e.codigo === codigo);
         if (indice === -1) {
             callback(`No existe ningún experto con el código ${codigo}.`);
             return;
         }
-        // 1. Eliminamos TODAS las consultas asociadas a este experto
-        // Filtramos el array para quedarnos solo con las consultas que NO son de este experto
         this.Consultas = this.Consultas.filter(c => c.codigoExperto !== codigo);
-        // 2. Eliminamos al experto
         this.Expertos.splice(indice, 1);
-        // 3. Guardamos los cambios en AMBAS listas (Expertos y Consultas)
         this.guardarExpertos();
         this.guardarConsultas();
-        callback(false); // Éxito
+        callback(false);
     }
     agregarConsulta({ consulta, callback }) {
         if (consulta.error()) {
@@ -86,29 +80,12 @@ export default class Cl_mDcyt {
             .map(c => c.toJSON());
     }
     cargarDatosIniciales(callback) {
-        try {
-            let expData = localStorage.getItem(this.KEY_EXPERTOS);
-            if (expData) {
-                let objects = JSON.parse(expData);
-                this.Expertos = objects.map(e => new Cl_mExperto(e));
-            }
-            let consData = localStorage.getItem(this.KEY_CONSULTAS);
-            if (consData) {
-                let objects = JSON.parse(consData);
-                this.Consultas = objects.map(c => new Cl_mConsulta(c));
-            }
-            callback(false);
-        }
-        catch (error) {
-            callback("Error al leer LocalStorage: " + error);
-        }
+        this.db.listRecords({ tabla: this.tbRegistro, callback });
     }
     guardarExpertos() {
-        let data = this.Expertos.map(e => e.toJSON());
-        localStorage.setItem(this.KEY_EXPERTOS, JSON.stringify(data));
+        let db = this.Expertos.map(e => e.toJSON());
     }
     guardarConsultas() {
-        let data = this.Consultas.map(c => c.toJSON());
-        localStorage.setItem(this.KEY_CONSULTAS, JSON.stringify(data));
+        let db = this.Consultas.map(c => c.toJSON());
     }
 }
