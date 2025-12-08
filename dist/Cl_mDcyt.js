@@ -1,9 +1,13 @@
 import Cl_dcytDb from "https://gtplus.net/forms2/dcytDb/api/Cl_dcytDb.php?v251110-2150";
+import Cl_mExperto from "./Cl_mExperto.js";
+import Cl_mConsulta from "./Cl_mConsulta.js";
 export default class Cl_mDcyt {
     constructor() {
         this.Expertos = [];
         this.Consultas = [];
-        this.tbRegistro = "Mi.Registro.v01";
+        this.KEY_EXPERTOS = "ProyV1_Expertos_Local";
+        this.KEY_CONSULTAS = "ProyV1_Consultas_Local";
+        this.tbDcyt = "Mi.Dcyt.v01";
         this.db = new Cl_dcytDb({ aliasCuenta: "CODEBREAKERS" });
     }
     agregarExperto({ experto, callback }) {
@@ -80,12 +84,29 @@ export default class Cl_mDcyt {
             .map(c => c.toJSON());
     }
     cargarDatosIniciales(callback) {
-        this.db.listRecords({ tabla: this.tbRegistro, callback });
+        try {
+            let expData = localStorage.getItem(this.KEY_EXPERTOS);
+            if (expData) {
+                let objects = JSON.parse(expData);
+                this.Expertos = objects.map(e => new Cl_mExperto(e));
+            }
+            let consData = localStorage.getItem(this.KEY_CONSULTAS);
+            if (consData) {
+                let objects = JSON.parse(consData);
+                this.Consultas = objects.map(c => new Cl_mConsulta(c));
+            }
+            callback(false);
+        }
+        catch (error) {
+            callback("Error al leer LocalStorage: " + error);
+        }
     }
     guardarExpertos() {
-        let db = this.Expertos.map(e => e.toJSON());
+        let data = this.Expertos.map(e => e.toJSON());
+        localStorage.setItem(this.KEY_EXPERTOS, JSON.stringify(data));
     }
     guardarConsultas() {
-        let db = this.Consultas.map(c => c.toJSON());
+        let data = this.Consultas.map(c => c.toJSON());
+        localStorage.setItem(this.KEY_CONSULTAS, JSON.stringify(data));
     }
 }
