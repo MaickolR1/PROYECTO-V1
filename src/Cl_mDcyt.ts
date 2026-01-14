@@ -85,14 +85,16 @@ export default class Cl_mDcyt {
             .map(c => c.toJSON());
     }
 
-    reportarRendimiento(): { nombre: string, total: number }[] {
-        let reporte: { nombre: string, total: number }[] = [];
+    reportarRendimiento(): { nombre: string, total: number, pendientes: number }[] {
+        let reporte: { nombre: string, total: number, pendientes: number }[] = [];
         
         this.Expertos.forEach(exp => {
             let total = this.Consultas.filter(c => c.codigoExperto === exp.codigo).length;
+            let pendientes = this.Consultas.filter(c => c.codigoExperto === exp.codigo && (c.respuesta === null || c.respuesta === "")).length;
             reporte.push({
                 nombre: exp.nombre,
-                total: total
+                total: total,
+                pendientes: pendientes
             });
         });
         return reporte;

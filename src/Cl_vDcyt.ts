@@ -19,7 +19,7 @@ export default class Cl_vDcyt extends Cl_vGeneral {
         this.vConsulta = new Cl_vConsulta();
         this.vAdministrador = new Cl_vAdministrador();
         
-        // Inicializar ocultos
+        
         this.vExperto.show({ver: false});
         this.vConsulta.show({ver: false});
         this.vAdministrador.show({ver: false});
