@@ -43,6 +43,6 @@ declare module "https://gtplus.net/forms2/dcytDb/api/Cl_dcytDb.php?v251110-2150"
     }) {}
   }
 
-  // 2. Exporta esa clase como el valor 'default' del módulo.
+  
   export default Cl_dcytDb;
 }
