@@ -85,9 +85,9 @@ export default class Cl_vAdministrador extends Cl_vGeneral {
 
     generarReporte() {
         let datos = this.controlador!.obtenerReporteRendimiento();
-        let html = "<table border=1><tr><th>Experto</th><th>Total Consultas</th><th>Consultas pendientes</th></tr>";
+        let html = "<table border=1><tr><th>Experto</th><th>Consultas pendientes</th><th>Total Consultas</th></tr>";
         datos.forEach(d => {
-            html += `<tr><td>${d.nombre}</td><td>${d.total}</td><td>${d.pendientes}</td></tr>`;
+            html += `<tr><td>${d.nombre}</td><td>${d.pendientes}</td><td>${d.total}</td></tr>`;
         });
         html += "</table>";
         this.divReporte.innerHTML = html;

@@ -21,7 +21,7 @@ export default class Cl_vExperto extends Cl_vGeneral {
             onchange: () => this.cargarPendientes()
         });
 
-        this.divConsultas = this.crearHTMLElement("divConsultas"); // TBODY
+        this.divConsultas = this.crearHTMLElement("divConsultas"); 
 
         this.divResponder = this.crearHTMLElement("divResponder");
         this.lblGrupo = document.getElementById("experto_lblGrupo") as HTMLElement;
