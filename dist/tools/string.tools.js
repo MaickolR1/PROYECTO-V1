@@ -1,3 +1,6 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.copyToClipboard = copyToClipboard;
 async function copyToClipboard(text) {
     // Comprobar si la API moderna está disponible
     try {
@@ -8,4 +11,3 @@ async function copyToClipboard(text) {
         alert(`Error al copiar texto con API moderna: ${err}`);
     }
 }
-export { copyToClipboard };

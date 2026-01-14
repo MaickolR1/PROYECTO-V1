@@ -1,12 +1,15 @@
-export const tHTMLElement = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tHTMLElement = void 0;
+exports.tHTMLElement = {
     CONTAINER: "container",
     INPUT: "input",
     SELECT: "select",
     BUTTON: "button",
     LABEL: "label",
 };
-Object.freeze(tHTMLElement);
-export default class Cl_vGeneral {
+Object.freeze(exports.tHTMLElement);
+class Cl_vGeneral {
     constructor({ formName }) {
         this._formName = "";
         this._vista = null;
@@ -37,9 +40,9 @@ export default class Cl_vGeneral {
     refresh() {
         this.objects.forEach((element) => element.refresh());
     }
-    crearHTMLElement(elementName, { isForm = false, type = tHTMLElement.CONTAINER, onclick = () => { }, onchange = () => { }, refresh = () => { }, } = {
+    crearHTMLElement(elementName, { isForm = false, type = exports.tHTMLElement.CONTAINER, onclick = () => { }, onchange = () => { }, refresh = () => { }, } = {
         isForm: false,
-        type: tHTMLElement.CONTAINER,
+        type: exports.tHTMLElement.CONTAINER,
         onclick: () => { },
         onchange: () => { },
         refresh: () => { },
@@ -47,13 +50,13 @@ export default class Cl_vGeneral {
         let domElementName = isForm
             ? elementName
             : `${this.formName}_${elementName}`, domElement;
-        if (type === tHTMLElement.INPUT)
+        if (type === exports.tHTMLElement.INPUT)
             domElement = document.getElementById(domElementName);
-        else if (type === tHTMLElement.SELECT)
+        else if (type === exports.tHTMLElement.SELECT)
             domElement = document.getElementById(domElementName);
-        else if (type === tHTMLElement.BUTTON)
+        else if (type === exports.tHTMLElement.BUTTON)
             domElement = document.getElementById(domElementName);
-        else if (type === tHTMLElement.LABEL)
+        else if (type === exports.tHTMLElement.LABEL)
             domElement = document.getElementById(domElementName);
         else
             domElement = document.getElementById(domElementName);
@@ -74,7 +77,7 @@ export default class Cl_vGeneral {
         refresh: () => { },
     }) {
         let domElement = this.crearHTMLElement(elementName, {
-            type: tHTMLElement.INPUT,
+            type: exports.tHTMLElement.INPUT,
             onchange,
             refresh,
         });
@@ -86,7 +89,7 @@ export default class Cl_vGeneral {
         refresh: () => { },
     }) {
         let domElement = this.crearHTMLElement(elementName, {
-            type: tHTMLElement.BUTTON,
+            type: exports.tHTMLElement.BUTTON,
             onclick,
             refresh,
         });
@@ -104,7 +107,7 @@ export default class Cl_vGeneral {
         refresh: () => { },
     }) {
         let domElement = this.crearHTMLElement(elementName, {
-            type: tHTMLElement.SELECT,
+            type: exports.tHTMLElement.SELECT,
             onchange,
             refresh,
         });
@@ -129,3 +132,4 @@ export default class Cl_vGeneral {
             this.vista.style.display = ver ? "flex" : "none";
     }
 }
+exports.default = Cl_vGeneral;

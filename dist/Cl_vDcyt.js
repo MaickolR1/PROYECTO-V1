@@ -1,13 +1,18 @@
-import Cl_vGeneral from "./tools/Cl_vGeneral.js";
-import Cl_vAdministrador from "./Cl_vAdministrador.js";
-import Cl_vExperto from "./Cl_vExperto.js";
-import Cl_vConsulta from "./Cl_vConsulta.js";
-export default class Cl_vDcyt extends Cl_vGeneral {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Cl_vGeneral_js_1 = __importDefault(require("./tools/Cl_vGeneral.js"));
+const Cl_vAdministrador_js_1 = __importDefault(require("./Cl_vAdministrador.js"));
+const Cl_vExperto_js_1 = __importDefault(require("./Cl_vExperto.js"));
+const Cl_vConsulta_js_1 = __importDefault(require("./Cl_vConsulta.js"));
+class Cl_vDcyt extends Cl_vGeneral_js_1.default {
     constructor() {
         super({ formName: "dcyt" });
-        this.vExperto = new Cl_vExperto();
-        this.vConsulta = new Cl_vConsulta();
-        this.vAdministrador = new Cl_vAdministrador();
+        this.vExperto = new Cl_vExperto_js_1.default();
+        this.vConsulta = new Cl_vConsulta_js_1.default();
+        this.vAdministrador = new Cl_vAdministrador_js_1.default();
         this.vExperto.show({ ver: false });
         this.vConsulta.show({ ver: false });
         this.vAdministrador.show({ ver: false });
@@ -55,3 +60,4 @@ export default class Cl_vDcyt extends Cl_vGeneral {
         }
     }
 }
+exports.default = Cl_vDcyt;

@@ -1,14 +1,23 @@
-import Cl_dcytDb from "https://gtplus.net/forms2/dcytDb/api/Cl_dcytDb.php?v251110-2150";
-import Cl_mExperto from "./Cl_mExperto.js";
-import Cl_mConsulta from "./Cl_mConsulta.js";
-export default class Cl_mDcyt {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Cl_dcytDb_php_v251110_2150_1 = __importDefault(require("https://gtplus.net/forms2/dcytDb/api/Cl_dcytDb.php?v251110-2150"));
+const Cl_mExperto_js_1 = __importDefault(require("./Cl_mExperto.js"));
+const Cl_mConsulta_js_1 = __importDefault(require("./Cl_mConsulta.js"));
+const archivoUtils_js_1 = require("./archivoUtils.js");
+const rutaDelArchivo = 'ruta_del_archivo.txt';
+const contenido = (0, archivoUtils_js_1.leerArchivo)(rutaDelArchivo);
+console.log(contenido);
+class Cl_mDcyt {
     constructor() {
         this.Expertos = [];
         this.Consultas = [];
         this.KEY_EXPERTOS = "ProyV1_Expertos_Local";
         this.KEY_CONSULTAS = "ProyV1_Consultas_Local";
         this.tbDcyt = "Mi.Dcyt.v01";
-        this.db = new Cl_dcytDb({ aliasCuenta: "CODEBREAKERS" });
+        this.db = new Cl_dcytDb_php_v251110_2150_1.default({ aliasCuenta: "CODEBREAKERS" });
     }
     agregarExperto({ experto, callback }) {
         if (experto.error()) {
@@ -90,12 +99,12 @@ export default class Cl_mDcyt {
             let expData = localStorage.getItem(this.KEY_EXPERTOS);
             if (expData) {
                 let objects = JSON.parse(expData);
-                this.Expertos = objects.map(e => new Cl_mExperto(e));
+                this.Expertos = objects.map(e => new Cl_mExperto_js_1.default(e));
             }
             let consData = localStorage.getItem(this.KEY_CONSULTAS);
             if (consData) {
                 let objects = JSON.parse(consData);
-                this.Consultas = objects.map(c => new Cl_mConsulta(c));
+                this.Consultas = objects.map(c => new Cl_mConsulta_js_1.default(c));
             }
             callback(false);
         }
@@ -112,3 +121,4 @@ export default class Cl_mDcyt {
         localStorage.setItem(this.KEY_CONSULTAS, JSON.stringify(data));
     }
 }
+exports.default = Cl_mDcyt;

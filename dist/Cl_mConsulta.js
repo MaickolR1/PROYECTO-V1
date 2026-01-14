@@ -1,4 +1,6 @@
-export default class Cl_mConsulta {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class Cl_mConsulta {
     constructor({ id, codigoExperto, grupo, pregunta, respuesta = null }) {
         this._codigoExperto = '';
         this._grupo = '';
@@ -38,3 +40,4 @@ export default class Cl_mConsulta {
         };
     }
 }
+exports.default = Cl_mConsulta;

@@ -1,5 +1,10 @@
-import Cl_vGeneral from "./tools/Cl_vGeneral.js";
-export default class Cl_vConsulta extends Cl_vGeneral {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Cl_vGeneral_js_1 = __importDefault(require("./tools/Cl_vGeneral.js"));
+class Cl_vConsulta extends Cl_vGeneral_js_1.default {
     constructor() {
         super({ formName: "consulta" });
         this.slExperto = this.crearHTMLSelectElement("slExperto", {
@@ -66,3 +71,4 @@ export default class Cl_vConsulta extends Cl_vGeneral {
         });
     }
 }
+exports.default = Cl_vConsulta;

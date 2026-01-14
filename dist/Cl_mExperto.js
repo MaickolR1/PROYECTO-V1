@@ -1,4 +1,6 @@
-export default class Cl_mExperto {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class Cl_mExperto {
     constructor({ codigo, nombre, area, cargo }) {
         this._codigo = "";
         this._nombre = "";
@@ -37,3 +39,4 @@ export default class Cl_mExperto {
         };
     }
 }
+exports.default = Cl_mExperto;
