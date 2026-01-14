@@ -5,7 +5,6 @@ export default class Cl_vAdministrador extends Cl_vGeneral {
         this.btAgregarExperto = this.crearHTMLButtonElement("btnAgregarExperto", {
             onclick: () => this.agregarExperto(),
         });
-        // NUEVO BOTÓN
         this.btEliminarExperto = this.crearHTMLButtonElement("btnEliminarExperto", {
             onclick: () => this.eliminarExperto(),
         });
@@ -68,9 +67,9 @@ export default class Cl_vAdministrador extends Cl_vGeneral {
     }
     generarReporte() {
         let datos = this.controlador.obtenerReporteRendimiento();
-        let html = "<table border=1><tr><th>Experto</th><th>Total Consultas</th></tr>";
+        let html = "<table border=1><tr><th>Experto</th><th>Consultas pendientes</th><th>Total Consultas</th></tr>";
         datos.forEach(d => {
-            html += `<tr><td>${d.nombre}</td><td>${d.total}</td></tr>`;
+            html += `<tr><td>${d.nombre}</td><td>${d.pendientes}</td><td>${d.total}</td></tr>`;
         });
         html += "</table>";
         this.divReporte.innerHTML = html;
