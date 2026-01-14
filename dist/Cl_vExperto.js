@@ -1,10 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const Cl_vGeneral_js_1 = __importDefault(require("./tools/Cl_vGeneral.js"));
-class Cl_vExperto extends Cl_vGeneral_js_1.default {
+import Cl_vGeneral from "./tools/Cl_vGeneral.js";
+export default class Cl_vExperto extends Cl_vGeneral {
     constructor() {
         super({ formName: "experto" });
         this.idConsultaActual = "";
@@ -88,4 +83,3 @@ class Cl_vExperto extends Cl_vGeneral_js_1.default {
         });
     }
 }
-exports.default = Cl_vExperto;

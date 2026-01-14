@@ -1,18 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const Cl_mExperto_js_1 = __importDefault(require("./Cl_mExperto.js"));
-const Cl_mConsulta_js_1 = __importDefault(require("./Cl_mConsulta.js"));
-class Cl_controlador {
+import Cl_mExperto from "./Cl_mExperto.js";
+import Cl_mConsulta from "./Cl_mConsulta.js";
+export default class Cl_controlador {
     constructor(modelo, vista) {
         this.modelo = modelo;
         this.vista = vista;
     }
     agregarExperto({ expertoData, callback }) {
         this.modelo.agregarExperto({
-            experto: new Cl_mExperto_js_1.default(expertoData),
+            experto: new Cl_mExperto(expertoData),
             callback: (error) => callback(error),
         });
     }
@@ -33,7 +28,7 @@ class Cl_controlador {
     }
     enviarConsulta({ consultaData, callback }) {
         this.modelo.agregarConsulta({
-            consulta: new Cl_mConsulta_js_1.default(consultaData),
+            consulta: new Cl_mConsulta(consultaData),
             callback: (error) => callback(error),
         });
     }
@@ -52,4 +47,3 @@ class Cl_controlador {
             this.vista.activarVista({ vista });
     }
 }
-exports.default = Cl_controlador;
