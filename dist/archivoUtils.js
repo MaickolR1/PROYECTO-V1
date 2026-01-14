@@ -1,4 +1,4 @@
-const fs = require('fs');
+import * as fs from 'fs';
 export function leerArchivo(nombreArchivo) {
     try {
         const contenido = fs.readFileSync(nombreArchivo, 'utf-8');
