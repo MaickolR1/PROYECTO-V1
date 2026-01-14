@@ -1,11 +1,6 @@
 import Cl_dcytDb from "https://gtplus.net/forms2/dcytDb/api/Cl_dcytDb.php?v251110-2150";
 import Cl_mExperto, { iExperto } from "./Cl_mExperto.js";
 import Cl_mConsulta, { iConsulta } from "./Cl_mConsulta.js";
-import { leerArchivo } from './archivoUtils.js';
-
-const rutaDelArchivo = 'ruta_del_archivo.txt';
-const contenido = leerArchivo(rutaDelArchivo);
-console.log(contenido);
 
 export default class Cl_mDcyt {
     private Expertos: Cl_mExperto[] = [];
